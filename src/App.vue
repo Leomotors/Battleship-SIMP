@@ -6,6 +6,7 @@
   <router-view />
 </template>
 
+<!-- Global Style -->
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -26,5 +27,11 @@
       color: #42b983;
     }
   }
+}
+
+@import "Anakotmai";
+
+* {
+  font-family: "Anakotmai";
 }
 </style>

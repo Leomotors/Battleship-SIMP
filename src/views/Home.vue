@@ -1,17 +1,26 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <h1>Welcome to Battleship SIMP</h1>
+    <!-- <BattleField /> -->
+    <form>
+      <p>Room ID</p>
+      <input id="RoomID" type="number" />
+      <button @click.prevent="click">Random One for me</button>
+      <p>Your Gaymrs Name</p>
+      <input id="GamerName" type="text" />
+      <br />
+      <button @click.prevent="click">Join the War</button>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import BattleField from "@/components/BattleField.vue";
 
 @Options({
   components: {
-    HelloWorld,
+    BattleField,
   },
 })
 export default class Home extends Vue {}

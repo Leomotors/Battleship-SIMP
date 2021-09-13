@@ -1,0 +1,43 @@
+# Workflow for Test
+
+name: Test
+
+on:
+  # Triggers on any push on any branch
+  push:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  Mocha:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: actions/checkout
+        uses: actions/checkout@v2
+      - name: Yarn Cache
+        uses: c-hive/gha-yarn-cache@v2
+      - name: Install Dependencies (Yarn)
+        run: yarn install
+      - name: Unit Test
+        run: yarn test:unit
+
+  Cypress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: actions/checkout
+        uses: actions/checkout@v2
+      - name: Yarn Cache
+        uses: c-hive/gha-yarn-cache@v2
+      - name: Install Dependencies (Yarn)
+        run: yarn install
+      # https://github.com/cypress-io/cypress-gh-action-vue-example
+      - name: E2E Test
+        uses: cypress-io/github-action@v2
+        with:
+          start: yarn serve
+          wait-on: http://localhost:8080/
+          config_file: cypress.json
+          spec: "tests/e2e/**/*"
+        env:
+          CYPRESS_baseUrl: http://localhost:8080/
