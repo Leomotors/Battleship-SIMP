@@ -4,6 +4,7 @@
     <h1>This is an about page</h1>
     <p>App Version: {{ AppVersion }}</p>
     <p>Built at: {{ AppBuildTime }}</p>
+    <a href="https://github.com/Leomotors/Battleship-SIMP">GitHub Repository</a>
     <VueCredits />
   </div>
 </template>

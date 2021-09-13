@@ -91,6 +91,7 @@ $pfp-size: 13em;
 
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
 
   border-radius: 1em 1em 0 0;
 }
@@ -122,6 +123,19 @@ $pfp-size: 13em;
     }
     &#GamerName {
       width: 13.3em;
+    }
+
+    // * https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type="number"] {
+      -moz-appearance: textfield;
     }
   }
   button {
