@@ -24,4 +24,13 @@ export default class About extends Vue {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.navbar {
+  padding: 2em;
+
+  a {
+    font-weight: bold;
+    color: #42b983;
+  }
+}
+</style>

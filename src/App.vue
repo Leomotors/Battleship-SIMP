@@ -5,7 +5,6 @@
 <!-- Global Style -->
 <style lang="scss">
 @import "Anakotmai";
-@import "styles/nav";
 
 #app {
   text-align: center;
