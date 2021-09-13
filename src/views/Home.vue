@@ -18,6 +18,4 @@ import GamerForm from "@/components/GamerForm.vue";
 export default class Home extends Vue {}
 </script>
 
-<style scoped lang="scss">
-@import "nav";
-</style>
+<style scoped lang="scss"></style>

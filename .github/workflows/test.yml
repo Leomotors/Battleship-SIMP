@@ -18,6 +18,11 @@ jobs:
         uses: c-hive/gha-yarn-cache@v2
       - name: Install Dependencies (Yarn)
         run: yarn install
+        # * Start Linting Actions before Mocha itself
+      - name: Lint Action
+        uses: wearerequired/lint-action@v1.10.0
+        with:
+          eslint: true
       - name: Unit Test
         run: yarn test:unit
 
@@ -41,19 +46,3 @@ jobs:
           spec: "tests/e2e/**/*"
         env:
           CYPRESS_baseUrl: http://localhost:8080/
-
-  Lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: actions/checkout
-        uses: actions/checkout@v2
-      - name: Yarn Cache
-        uses: c-hive/gha-yarn-cache@v2
-      - name: Install Dependencies (Yarn)
-        run: yarn install
-      - name: Lint Action
-        uses: wearerequired/lint-action@v1.10.0
-        with:
-          eslint: true
-          prettier: true

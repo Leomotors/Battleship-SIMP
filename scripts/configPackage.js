@@ -28,7 +28,7 @@ const sec = _addZero(d.getSeconds());
 
 var formattedDate = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
 
-const pkgInfoFile = `
+const pkgInfoFile = `/* eslint-disable */
 export const Version = "${version}";
 export const BuildTime = "${formattedDate}";
 `;

@@ -1,6 +1,6 @@
 {
   "name": "battleship-simp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "scripts": {
     "serve": "node scripts/incrementVersion.js && node scripts/configPackage.js && vue-cli-service serve",
@@ -8,7 +8,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "install" : "node scripts/configPackage.js"
+    "install": "node scripts/configPackage.js"
   },
   "dependencies": {
     "core-js": "^3.17.3",

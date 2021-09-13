@@ -24,6 +24,4 @@ export default class About extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-@import "nav";
-</style>
+<style scoped lang="scss"></style>
