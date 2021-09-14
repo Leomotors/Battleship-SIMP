@@ -19,9 +19,9 @@ jobs:
       - name: Install Dependencies (Yarn)
         run: yarn install
       - name: Lint with ESLint (src and unit Mocha)
-        run: eslint -c .eslintrc.js --max-warnings 0 scripts/*.js src/**/*.vue src/**/*.ts tests/unit/*.ts
+        run: yarn run eslint -c .eslintrc.js --max-warnings 0 scripts/*.js src/**/*.vue src/**/*.ts tests/unit/*.ts
       - name: Lint with ESLint (e2e)
-        run: eslint -c tests/e2e/.eslintrc.js --max-warnings 0 tests/e2e/**/*.js
+        run: yarn run eslint -c tests/e2e/.eslintrc.js --max-warnings 0 tests/e2e/**/*.js
 
   Mocha:
     runs-on: ubuntu-latest
