@@ -1,28 +1,47 @@
 <template>
-  <div id="GamerForm">
-    <div id="ProfilePicCtrl">
+  <div id="GamerForm" class="container-xl">
+    <div id="ProfilePicCtrl" class="mx-auto mb-5">
       <div
         id="ProfilePic"
+        class="mx-auto"
         v-bind:style="{ backgroundImage: `url(${background})` }"
       ></div>
-      <div id="CtrlButtons">
+      <div id="CtrlButtons" class="mx-auto">
         <button class="arrow" id="lt" @click="changeBackground(-1)">
           &lt;
         </button>
         <button class="arrow" id="gt" @click="changeBackground(1)">&gt;</button>
       </div>
     </div>
-    <div id="FormPart">
+    <div
+      id="FormPart"
+      class="
+        container-lg
+        d-flex
+        flex-column
+        align-items-center
+        justify-content-center
+      "
+    >
       <form>
-        <label>Room ID</label>
-        <input id="RoomID" type="number" v-model="roomID" placeholder="69420" />
-        <button @click.prevent="click" @click="randomID">
-          Random One for me
-        </button>
-        <br />
-        <label>Your Gaymrs Name</label>
-        <input id="GamerName" type="text" placeholder="InwZaNonPrayut" />
-        <br />
+        <div id="room-input">
+          <label>Room ID</label>
+          <input
+            id="RoomID"
+            type="number"
+            v-model="roomID"
+            placeholder="69420"
+          />
+          <button @click.prevent="click" @click="randomID">
+            Random One for me
+          </button>
+        </div>
+
+        <div id="gamer-name-input">
+          <label>Your Gaymrs Name</label>
+          <input id="GamerName" type="text" placeholder="InwZaNonPrayut" />
+        </div>
+
         <button @click.prevent="click">Join the War</button>
       </form>
     </div>
@@ -60,18 +79,8 @@ $pfp-size: 13em;
   box-sizing: border-box;
 }
 
-#GamerForm {
-  display: flex;
-  flex-direction: row;
-  margin: 0 auto;
-  padding: 1em 1em;
-  justify-content: center;
-  div {
-    margin: 0 1em;
-  }
-}
-
 #ProfilePicCtrl {
+  width: $pfp-size;
   button {
     width: 50%;
     border: 1px solid black;
@@ -81,13 +90,12 @@ $pfp-size: 13em;
     &#gt {
       border-radius: 0 0 1em 0;
     }
+    font-size: 1.3em;
   }
 }
 
 #ProfilePic {
   height: $pfp-size;
-  width: $pfp-size;
-  flex: flex-basis;
 
   background-repeat: no-repeat;
   background-size: cover;
@@ -96,13 +104,7 @@ $pfp-size: 13em;
   border-radius: 1em 1em 0 0;
 }
 
-.arrow {
-  font-size: 1.3em;
-}
-
 #FormPart {
-  flex: flex-basis;
-
   * {
     margin: 0.2em;
     padding: 0.1em;

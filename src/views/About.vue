@@ -1,6 +1,8 @@
 <template>
   <div class="about">
-    <div class="navbar"><router-link to="/">Go Home</router-link></div>
+    <div class="my-navbar mx-auto">
+      <router-link to="/">Go Home</router-link>
+    </div>
     <h1>This is an about page</h1>
     <p>App Version: {{ AppVersion }}</p>
     <p>Built at: {{ AppBuildTime }}</p>
@@ -26,7 +28,7 @@ export default class About extends Vue {
 </script>
 
 <style scoped lang="scss">
-.navbar {
+.my-navbar {
   padding: 2em;
 
   a {
