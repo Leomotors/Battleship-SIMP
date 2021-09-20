@@ -11,7 +11,7 @@
     "install": "node scripts/configPackage.js"
   },
   "dependencies": {
-    "core-js": "^3.17.3",
+    "core-js": "^3.18.0",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.11",
     "vue-class-component": "^8.0.0-rc.1",
