@@ -20,7 +20,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.21",
+    "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
