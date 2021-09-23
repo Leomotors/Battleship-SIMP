@@ -1,30 +1,42 @@
 <template>
-  <div id="WaitingRoom">
+  <div id="WaitingRoom" v-if="me?.uuid">
     <h1 class="pt-5 mb-5 display-2">Waiting Room</h1>
     <div class="user-cards container-xl">
       <UserCard
-        :uuid="stupidfn()"
-        name="Prayut"
-        pfp="https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Prayuth_2018_cropped.jpg/800px-Prayuth_2018_cropped.jpg"
+        :uuid="me?.uuid"
+        :name="me?.name"
+        :pfp="me?.pfp"
         :ready="readyState.me"
         @ready="changeReadyState('me')"
       ></UserCard>
       <h1 class="VS my-3 badge badge-pill bg-secondary">VS</h1>
       <UserCard
-        :uuid="stupidfn()"
-        name="Thaksin"
-        pfp="https://i1.wp.com/www.thailandnews.co/wp-content/uploads/Thaksin20.jpg"
+        :uuid="opponent?.uuid"
+        :name="opponent?.name"
+        :pfp="opponent?.pfp"
         :ready="readyState.opponent"
         @ready="changeReadyState('opponent')"
       ></UserCard>
     </div>
+  </div>
+  <div v-else class="onNoUser p-5">
+    <div class="alert alert-danger m-auto" role="alert">
+      <h1 class="alert-heading">No User Found</h1>
+      <hr />
+      <h4>Please join the War Properly</h4>
+    </div>
+    <button class="btn btn-info mt-5" @click="goHome">Go To Home Screen</button>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import UserCard from "@/components/UserCard.vue";
-import { v4 as uuid } from "uuid";
+
+import { db } from "@/backend/Firebase";
+import { ref, set, child, get } from "firebase/database";
+import { useStore } from "@/store/index";
+import { User } from "@/backend/User";
 
 @Options({
   components: {
@@ -32,14 +44,50 @@ import { v4 as uuid } from "uuid";
   },
 })
 export default class WaitingRoom extends Vue {
-  stupidfn = uuid;
+  readonly store = useStore();
+  me?: User;
+  opponent: User = {};
+  roomID = "";
+
   readyState = {
     me: false,
     opponent: false,
   };
 
+  created(): void {
+    this.me = this.store.state.user;
+    this.roomID = this.$route.params.roomID as string;
+    this.joinRoom();
+  }
+
+  async joinRoom(): Promise<void> {
+    const snapshot = await get(child(ref(db), `rooms/${this.roomID}`));
+    const hostData = snapshot.val();
+
+    if (snapshot.exists()) {
+      // * Append yourself to guest
+      set(ref(db, `rooms/${this.roomID}`), {
+        ...hostData,
+        guest: this.me,
+        guestReady: false,
+      });
+      this.opponent = hostData.host;
+    } else {
+      // * Create Room if not exist
+      set(ref(db, `rooms/${this.roomID}`), {
+        created: Date().toString(),
+        host: this.me,
+        hostReady: false,
+      });
+    }
+  }
+
   changeReadyState(key: "me" | "opponent"): void {
     this.readyState[key] = !this.readyState[key];
+  }
+
+  goHome(): void {
+    this.$router.push({ path: "/" });
   }
 }
 </script>
@@ -57,5 +105,9 @@ export default class WaitingRoom extends Vue {
 .VS {
   font-size: 4em;
   border-radius: 0.5em;
+}
+
+.onNoUser {
+  height: 100vh;
 }
 </style>

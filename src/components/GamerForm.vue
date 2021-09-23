@@ -32,17 +32,15 @@
             v-model="roomID"
             placeholder="69420"
           />
-          <button @click.prevent="click" @click="randomID">
-            Random One for me
-          </button>
+          <button @click.prevent="randomID">Random One for me</button>
         </div>
 
         <div id="gamer-name-input">
           <label>Your Gaymrs Name</label>
-          <input id="GamerName" type="text" placeholder="InwZaNonPrayut" />
+          <input v-model="gamerName" type="text" placeholder="InwZaNonPrayut" />
         </div>
 
-        <button @click.prevent="click">Join the War</button>
+        <button @click.prevent="joinWar">Join the War</button>
       </form>
     </div>
   </div>
@@ -50,12 +48,17 @@
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { v4 as uuid } from "uuid";
+
 import { ProfilePic } from "@/data/ProfilePic";
+import { useStore } from "@/store/index";
 
 const ID_Range = 1000000;
 
 export default class GamerForm extends Vue {
+  store = useStore();
   roomID: number | null = null;
+  gamerName = "";
   bgIndex = 0;
   background = ProfilePic[this.bgIndex];
 
@@ -68,6 +71,15 @@ export default class GamerForm extends Vue {
     if (this.bgIndex < 0) this.bgIndex += ProfilePic.length;
     if (this.bgIndex >= ProfilePic.length) this.bgIndex -= ProfilePic.length;
     this.background = ProfilePic[this.bgIndex];
+  }
+
+  joinWar(): void {
+    this.store.commit("setUser", {
+      name: this.gamerName,
+      pfp: this.background,
+      uuid: uuid(),
+    });
+    this.$router.push({ name: "WaitingRoom", params: { roomID: this.roomID } });
   }
 }
 </script>
