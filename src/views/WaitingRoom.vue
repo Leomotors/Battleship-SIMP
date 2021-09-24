@@ -1,13 +1,9 @@
 <template>
-  <div id="WaitingRoom" v-if="me?.uuid">
-    <h1 class="pt-5 mb-2 display-2">
+  <div id="WaitingRoom">
+    <h1 class="pt-5 mb-2 display-2 room-title">
       Waiting Room
       <span class="h2 text-muted">Room Number: {{ roomID }}</span>
     </h1>
-    <div v-if="errorMessage" class="error-msg alert alert-danger my-2 mx-auto">
-      {{ errorMessage }}
-      <a @click="goHome" class="underline">Go Home</a>
-    </div>
     <div class="user-cards container-xl mt-4">
       <UserCard
         :uuid="me?.uuid"
@@ -26,14 +22,6 @@
         :isUser="false"
       ></UserCard>
     </div>
-  </div>
-  <div v-else class="onNoUser p-5">
-    <div class="alert alert-danger m-auto" role="alert">
-      <h1 class="alert-heading">No User Found</h1>
-      <hr />
-      <h4>Please join the War Properly</h4>
-    </div>
-    <button class="btn btn-info mt-5" @click="goHome">Go To Home Screen</button>
   </div>
 </template>
 
@@ -59,7 +47,6 @@ export default class WaitingRoom extends Vue {
   roomID = "";
   userRole = "";
   opponentRole = "";
-  errorMessage = "";
 
   readyState = {
     me: false,
@@ -68,7 +55,23 @@ export default class WaitingRoom extends Vue {
 
   created(): void {
     this.me = this.store.state.user;
+
+    if (!this.me.uuid)
+      this.$router.replace({
+        name: "ปรับทัศนคติ",
+        params: {
+          errorMsg: "Can't verify identity, please join the war properly!",
+        },
+      });
+
     this.roomID = this.$route.params.roomID as string;
+
+    if (!this.roomID)
+      this.$router.replace({
+        name: "ปรับทัศนคติ",
+        params: { errorMsg: "No Room ID Found!" },
+      });
+
     this.joinRoom();
   }
 
@@ -79,7 +82,10 @@ export default class WaitingRoom extends Vue {
     if (snapshot.exists()) {
       if (ssData.guest) {
         // * Room is full
-        this.errorMessage = "Room is Full!";
+        this.$router.replace({
+          name: "ปรับทัศนคติ",
+          params: { errorMsg: "Room is Full!" },
+        });
         return;
       }
 
@@ -116,24 +122,25 @@ export default class WaitingRoom extends Vue {
     );
     onValue(OpponentReadyRef, (snapshot) => {
       this.readyState.opponent = snapshot.val();
+      this.checkReadyState();
     });
   }
 
   changeReadyState(): void {
     this.readyState.me = !this.readyState.me;
-    if (!this.errorMessage)
-      set(
-        ref(db, `rooms/${this.roomID}/${this.userRole}Ready`),
-        this.readyState.me
-      );
-
+    set(
+      ref(db, `rooms/${this.roomID}/${this.userRole}Ready`),
+      this.readyState.me
+    );
     this.checkReadyState();
   }
 
+  // * Check if both player is ready, if yes, redirect to game
   checkReadyState(): void {
     if (this.readyState.me && this.readyState.opponent) {
-      this.store.commit("setGame", {
+      this.store.commit("setRoomInfo", {
         myRole: this.userRole,
+        opponentRole: this.opponentRole,
         roomID: this.roomID,
       });
       this.$router.push({ name: "Game" });
@@ -141,19 +148,14 @@ export default class WaitingRoom extends Vue {
   }
 
   goHome(): void {
-    this.$router.push({ path: "/" });
+    this.$router.replace({ path: "/" });
   }
 }
 </script>
 
 <style scoped lang="scss">
-#WaitingRoom {
-  min-height: 100vh;
-  background-image: url("https://www.postapocalypticmedia.com/wp-content/uploads/2020/12/AoTOpening-1024x683.jpg");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+h1.room-title {
+  font-weight: bold;
 }
 
 .VS {

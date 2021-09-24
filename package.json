@@ -1,6 +1,6 @@
 {
   "name": "battleship-simp",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "private": true,
   "scripts": {
     "serve": "node scripts/incrementVersion.js && node scripts/configPackage.js && vue-cli-service serve",

@@ -28,8 +28,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/:pathMatch(.*)*",
-    name: "404",
-    component: () => import("../views/404.vue"),
+    name: "ปรับทัศนคติ",
+    component: () => import("../views/44.vue"),
   },
 ];
 

@@ -2,11 +2,11 @@ import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
 
 import { User } from "@/backend/User";
-import { Game } from "@/backend/Game";
+import { RoomInfo } from "@/backend/RoomInfo";
 
 export interface State {
   user: User;
-  game: Game;
+  roomInfo: RoomInfo;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -14,14 +14,14 @@ export const key: InjectionKey<Store<State>> = Symbol();
 export default createStore<State>({
   state: {
     user: {},
-    game: {},
+    roomInfo: {},
   },
   mutations: {
     setUser(state, user: User) {
       state.user = user;
     },
-    setGame(state, game: Game) {
-      state.game = game;
+    setRoomInfo(state, roomInfo: RoomInfo) {
+      state.roomInfo = roomInfo;
     },
   },
   actions: {},
