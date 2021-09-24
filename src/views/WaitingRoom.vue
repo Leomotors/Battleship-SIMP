@@ -1,13 +1,21 @@
 <template>
   <div id="WaitingRoom" v-if="me?.uuid">
-    <h1 class="pt-5 mb-5 display-2">Waiting Room</h1>
-    <div class="user-cards container-xl">
+    <h1 class="pt-5 mb-2 display-2">
+      Waiting Room
+      <span class="h2 text-muted">Room Number: {{ roomID }}</span>
+    </h1>
+    <div v-if="errorMessage" class="error-msg alert alert-danger my-2 mx-auto">
+      {{ errorMessage }}
+      <a @click="goHome" class="underline">Go Home</a>
+    </div>
+    <div class="user-cards container-xl mt-4">
       <UserCard
         :uuid="me?.uuid"
         :name="me?.name"
         :pfp="me?.pfp"
         :ready="readyState.me"
-        @ready="changeReadyState('me')"
+        @ready="changeReadyState"
+        :isUser="true"
       ></UserCard>
       <h1 class="VS my-3 badge badge-pill bg-secondary">VS</h1>
       <UserCard
@@ -15,7 +23,7 @@
         :name="opponent?.name"
         :pfp="opponent?.pfp"
         :ready="readyState.opponent"
-        @ready="changeReadyState('opponent')"
+        :isUser="false"
       ></UserCard>
     </div>
   </div>
@@ -34,7 +42,8 @@ import { Options, Vue } from "vue-class-component";
 import UserCard from "@/components/UserCard.vue";
 
 import { db } from "@/backend/Firebase";
-import { ref, set, child, get } from "firebase/database";
+import { ref, set, child, get, onValue } from "firebase/database";
+
 import { useStore } from "@/store/index";
 import { User } from "@/backend/User";
 
@@ -48,6 +57,9 @@ export default class WaitingRoom extends Vue {
   me?: User;
   opponent: User = {};
   roomID = "";
+  userRole = "";
+  opponentRole = "";
+  errorMessage = "";
 
   readyState = {
     me: false,
@@ -62,28 +74,70 @@ export default class WaitingRoom extends Vue {
 
   async joinRoom(): Promise<void> {
     const snapshot = await get(child(ref(db), `rooms/${this.roomID}`));
-    const hostData = snapshot.val();
+    const ssData = snapshot.val();
 
     if (snapshot.exists()) {
+      if (ssData.guest) {
+        // * Room is full
+        this.errorMessage = "Room is Full!";
+        return;
+      }
+
       // * Append yourself to guest
       set(ref(db, `rooms/${this.roomID}`), {
-        ...hostData,
+        ...ssData,
         guest: this.me,
         guestReady: false,
       });
-      this.opponent = hostData.host;
+      this.opponent = ssData.host;
+      this.userRole = "guest";
+      this.opponentRole = "host";
     } else {
       // * Create Room if not exist
       set(ref(db, `rooms/${this.roomID}`), {
         created: Date().toString(),
         host: this.me,
         hostReady: false,
+        guest: null,
+        guestReady: false,
       });
+      // * Keep Track of Guest
+      const guestRef = ref(db, `rooms/${this.roomID}/guest`);
+      onValue(guestRef, (snapshot) => {
+        this.opponent = snapshot.val();
+      });
+      this.userRole = "host";
+      this.opponentRole = "guest";
     }
+
+    const OpponentReadyRef = ref(
+      db,
+      `rooms/${this.roomID}/${this.opponentRole}Ready`
+    );
+    onValue(OpponentReadyRef, (snapshot) => {
+      this.readyState.opponent = snapshot.val();
+    });
   }
 
-  changeReadyState(key: "me" | "opponent"): void {
-    this.readyState[key] = !this.readyState[key];
+  changeReadyState(): void {
+    this.readyState.me = !this.readyState.me;
+    if (!this.errorMessage)
+      set(
+        ref(db, `rooms/${this.roomID}/${this.userRole}Ready`),
+        this.readyState.me
+      );
+
+    this.checkReadyState();
+  }
+
+  checkReadyState(): void {
+    if (this.readyState.me && this.readyState.opponent) {
+      this.store.commit("setGame", {
+        myRole: this.userRole,
+        roomID: this.roomID,
+      });
+      this.$router.push({ name: "Game" });
+    }
   }
 
   goHome(): void {
@@ -109,5 +163,9 @@ export default class WaitingRoom extends Vue {
 
 .onNoUser {
   height: 100vh;
+}
+
+.error-msg {
+  width: 50vw;
 }
 </style>

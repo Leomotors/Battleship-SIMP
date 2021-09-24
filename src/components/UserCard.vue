@@ -22,12 +22,20 @@
       <p class="h4 text-muted">{{ uuid }}</p>
       <p class="h1">{{ name }}</p>
       <button
+        v-if="isUser"
         class="btn mt-3"
         :class="{ 'btn-success': !ready, 'btn-danger': ready }"
         @click="$emit('ready')"
       >
         {{ ready ? "Unready" : "Ready" }}
       </button>
+      <div
+        v-else
+        class="h4"
+        :class="{ 'text-success': ready, 'text-danger': !ready }"
+      >
+        {{ ready ? "Ready" : "Not Ready" }}
+      </div>
     </div>
   </div>
 </template>
@@ -41,6 +49,7 @@ import { Options, Vue } from "vue-class-component";
     name: String,
     pfp: String,
     ready: Boolean,
+    isUser: Boolean,
   },
 })
 export default class UserCard extends Vue {}
